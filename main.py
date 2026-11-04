@@ -45,7 +45,7 @@ def create_app(
             return champion_version.version
         
     @asynccontextmanager
-    def lifespan(app: FastAPI):
+    async def lifespan(app: FastAPI):
         try:
             app.state.model=model_loader()
         except Exception as ex:
@@ -69,6 +69,7 @@ def create_app(
             "status": "Ready to serve"
         }
 
+    @app.get("/health")
     def health_check():
         return {
             "status": "healthy",
@@ -92,5 +93,7 @@ def create_app(
             "class_name": ["setosa", "versicolor", "virginica"][prediction]
         }
 
+    return app
+
 # Production application instance
-# app=create_app()
+app = create_app()
